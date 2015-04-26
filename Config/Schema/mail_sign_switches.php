@@ -15,6 +15,7 @@ class MailSignSwitchesSchema extends CakeSchema {
 	public $mail_sign_switches = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary', 'comment' => 'ID'),
 		'mail_content_id' => array('type' => 'integer', 'null' => true, 'default' => null, 'unsigned' => false, 'comment' => 'メールコンテンツID'),
+		'status' => array('type' => 'boolean', 'null' => true, 'default' => '0', 'comment' => 'デフォルト署名の利用'),
 		'site_name' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => 'サイト名', 'charset' => 'utf8'),
 		'site_url' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'サイトURL', 'charset' => 'utf8'),
 		'site_email' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => 'サイトEメール', 'charset' => 'utf8'),

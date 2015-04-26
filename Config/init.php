@@ -32,6 +32,7 @@ if ($mailContentDatas) {
 		unset($savaData['MailSignSwitch']['id']);
 		if(!$mailSignSwitch) {
 			$savaData['MailSignSwitch']['mail_content_id'] = $key;
+			$savaData['MailSignSwitch']['status'] = true;
 			$MailSignSwitchModel->create($savaData);
 			$MailSignSwitchModel->save($savaData, false);
 		}
