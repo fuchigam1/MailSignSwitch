@@ -6,7 +6,8 @@
  * @author			arata
  * @license			MIT
  */
-class MailSignSwitch extends BcPluginAppModel {
+class MailSignSwitch extends BcPluginAppModel
+{
 /**
  * ModelName
  * 
@@ -22,7 +23,7 @@ class MailSignSwitch extends BcPluginAppModel {
 	public $plugin = 'MailSignSwitch';
 	
 /**
- * ビヘイビア
+ * Behavior
  * 
  * @var array
  */
@@ -33,7 +34,8 @@ class MailSignSwitch extends BcPluginAppModel {
  *
  * @return array
  */
-	public function getDefaultValue() {
+	public function getDefaultValue()
+	{
 		$data = array(
 			'MailSignSwitch' => array(
 				'status' => false,

@@ -6,7 +6,8 @@
  * @author			arata
  * @license			MIT
  */
-class MailSignSwitchModelEventListener extends BcModelEventListener {
+class MailSignSwitchModelEventListener extends BcModelEventListener
+{
 /**
  * 登録イベント
  *
@@ -28,9 +29,9 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
 /**
  * MailSignSwitch モデルを準備する
  * 
- * @access private
  */
-	private function setUpModel() {
+	private function setUpModel()
+	{
 		if (ClassRegistry::isKeySet('MailSignSwitch.MailSignSwitch')) {
 			$this->MailSignSwitchModel = ClassRegistry::getObject('MailSignSwitch.MailSignSwitch');
 		} else {
@@ -44,7 +45,8 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
  * 
  * @param CakeEvent $event
  */
-	function mailMailContentBeforeFind(CakeEvent $event) {
+	public function mailMailContentBeforeFind(CakeEvent $event)
+	{
 		$Model = $event->subject();
 		$association = array(
 			'MailSignSwitch' => array(
@@ -61,7 +63,8 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
  * 
  * @param CakeEvent $event
  */
-	public function mailMailContentAfterSave(CakeEvent $event) {
+	public function mailMailContentAfterSave(CakeEvent $event)
+	{
 		$Model = $event->subject();
 		$saveData = $this->generateContentSaveData($Model, $Model->id);
 		if ($saveData) {
@@ -77,7 +80,8 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
  * 
  * @param CakeEvent $event
  */
-	public function mailMailContentAfterDelete(CakeEvent $event) {
+	public function mailMailContentAfterDelete(CakeEvent $event)
+	{
 		$Model = $event->subject();
 		$this->setUpModel();
 		$data = $this->MailSignSwitchModel->find('first', array(
@@ -96,9 +100,10 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
  * 
  * @param Object $Model
  * @param int $contentId
- * @return array
+ * @return boolean or array
  */
-	public function generateContentSaveData($Model, $contentId) {
+	private function generateContentSaveData($Model, $contentId)
+	{
 		if ($Model->alias != 'MailContent') {
 			return false;
 		}

@@ -6,7 +6,8 @@
  * @author			arata
  * @license			MIT
  */
-class MailSignSwitchControllerEventListener extends BcControllerEventListener {
+class MailSignSwitchControllerEventListener extends BcControllerEventListener
+{
 /**
  * 登録イベント
  * 
@@ -20,9 +21,9 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener {
 /**
  * MailSignSwitch モデルを準備する
  * 
- * @access private
  */
-	private function setUpModel() {
+	private function setUpModel()
+	{
 		if (ClassRegistry::isKeySet('MailSignSwitch.MailSignSwitch')) {
 			$this->MailSignSwitchModel = ClassRegistry::getObject('MailSignSwitch.MailSignSwitch');
 		} else {
@@ -41,7 +42,8 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener {
  * @param CakeEvent $event
  * @return boolean
  */
-	public function mailMailBeforeSendEmail(CakeEvent $event) {
+	public function mailMailBeforeSendEmail(CakeEvent $event)
+	{
 		$Controller = $event->subject();
 		$this->setUpModel();
 		$mailSignSwitch = $this->MailSignSwitchModel->find('first', array(
@@ -65,7 +67,8 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener {
  * 
  * @param CakeEvent $event
  */
-	public function mailMailContentsBeforeRender(CakeEvent $event) {
+	public function mailMailContentsBeforeRender(CakeEvent $event)
+	{
 		if (!BcUtil::isAdminSystem()) {
 			return;
 		}

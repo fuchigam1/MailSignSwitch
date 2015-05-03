@@ -6,15 +6,16 @@
  * @author			arata
  * @license			MIT
  */
-class MailSignSwitchHelperEventListener extends BcHelperEventListener {
+class MailSignSwitchHelperEventListener extends BcHelperEventListener
+{
 /**
  * 登録イベント
  *
  * @var array
  */
 	public $events = array(
-		// Form.afterForm Or Form.afterOptionForm
 		'Form.afterOptionForm',
+		// Form.afterForm Or Form.afterOptionForm,
 	);
 	
 /**
@@ -37,11 +38,13 @@ class MailSignSwitchHelperEventListener extends BcHelperEventListener {
  * @param CakeEvent $event
  * @return string
  */
-	public function formAfterOptionForm(CakeEvent $event) {
-		$View = $event->subject();
+	public function formAfterOptionForm(CakeEvent $event)
+	{
 		if (!BcUtil::isAdminSystem()) {
 			return;
 		}
+		
+		$View = $event->subject();
 		
 		if (in_array($View->name, $this->judgeControllers)) {
 			if (in_array($View->request->params['action'], $this->judgeActions)) {
