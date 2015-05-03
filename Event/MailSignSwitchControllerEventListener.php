@@ -66,22 +66,22 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener {
  * @param CakeEvent $event
  */
 	public function mailMailContentsBeforeRender(CakeEvent $event) {
+		if (!BcUtil::isAdminSystem()) {
+			return;
+		}
+		
 		$Controller = $event->subject();
-		if (BcUtil::isAdminSystem()) {
-			$this->setUpModel();
-			
-			// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
-			$mailConfigData = $this->MailConfigModel->find('first', array(
-				'conditions' => array('MailConfig.id' => 1),
-				'recursive' => -1,
-			));
-			$Controller->request->data['MailConfig'] = $mailConfigData['MailConfig'];
-			
-			if ($Controller->request->action == 'admin_add') {
-				// メールフォーム追加画面では、MailSignSwitchの初期設定情報を送る
-				$defalut = $this->MailSignSwitchModel->getDefaultValue();
-				$Controller->request->data['MailSignSwitch'] = $defalut['MailSignSwitch'];
-			}
+		$this->setUpModel();
+		
+		// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
+		// - first は最初の1レコードを取得するためID指定は不要
+		$mailConfigData = $this->MailConfigModel->find('first', array('recursive' => -1));
+		$Controller->request->data['MailConfig'] = $mailConfigData['MailConfig'];
+		
+		if ($Controller->request->params['action'] == 'admin_add') {
+			// メールフォーム追加画面では、MailSignSwitchの初期設定情報を送る
+			$defalut = $this->MailSignSwitchModel->getDefaultValue();
+			$Controller->request->data['MailSignSwitch'] = $defalut['MailSignSwitch'];
 		}
 	}
 	
