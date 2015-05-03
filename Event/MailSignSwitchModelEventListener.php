@@ -64,13 +64,10 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
 	public function mailMailContentAfterSave(CakeEvent $event) {
 		$Model = $event->subject();
 		$saveData = $this->generateContentSaveData($Model, $Model->id);
-		if (isset($saveData['MailSignSwitch']['id'])) {
-			$this->MailSignSwitchModel->set($saveData);
-		} else {
-			$this->MailSignSwitchModel->create($saveData);
-		}
-		if (!$this->MailSignSwitchModel->save()) {
-			$this->log(sprintf('ID：%s のメールサインスイッチ設定の保存に失敗しました。', $Model->data['MailSignSwitch']['id']));
+		if ($saveData) {
+			if (!$this->MailSignSwitchModel->save($saveData)) {
+				$this->log(sprintf('ID：%s のメールサインスイッチ設定の保存に失敗しました。', $Model->data['MailSignSwitch']['id']));
+			}
 		}
 	}
 	
@@ -102,48 +99,47 @@ class MailSignSwitchModelEventListener extends BcModelEventListener {
  * @return array
  */
 	public function generateContentSaveData($Model, $contentId) {
-		$params = Router::getParams();
+		if ($Model->alias != 'MailContent') {
+			return false;
+		}
+		
 		$this->setUpModel();
-		$data = array();
-		if ($Model->alias == 'MailContent') {
-			$modelId = $contentId;
-			if (isset($params['pass'][0])) {
-				$oldModelId = $params['pass'][0];
-			}
+		$params = Router::getParams();			// 動作判定のため取得
+		$data = array();						// 保存対象データ
+		$foreignId = $contentId;				// 外部キー設定
+		if (isset($params['pass'][0])) {
+			$oldModelId = $params['pass'][0];	// ajax処理に入ってくる処理対象モデルID
 		}
 		
 		switch ($params['action']) {
-			case 'admin_add':
-				// メールフォーム追加時
+			case 'admin_add':		// メールフォーム追加時
 				$data['MailSignSwitch'] = $Model->data['MailSignSwitch'];
-				$data['MailSignSwitch']['mail_content_id'] = $contentId;
+				$data['MailSignSwitch']['mail_content_id'] = $foreignId;
 				unset($data['MailSignSwitch']['id']);
 				break;
 			
-			case 'admin_edit':
-				// メールフォーム編集時
+			case 'admin_edit':		// メールフォーム編集時
 				$data['MailSignSwitch'] = $Model->data['MailSignSwitch'];
 				break;
 			
-			case 'admin_ajax_copy':
-				// Ajaxコピー処理時に実行
+			case 'admin_ajax_copy':	// Ajaxコピー処理時に実行
 				// メールフォームコピー保存時にエラーがなければ保存処理を実行
 				if (empty($Model->validationErrors)) {
-					$_data = $this->MailSignSwitchModel->find('first', array(
+					// ajax 処理の際は、複製するモデルのデータのみ取得している状態なので、プラグイン側では改めて複製対象を取得する
+					$cloneData = $this->MailSignSwitchModel->find('first', array(
 						'conditions' => array(
 							'MailSignSwitch.mail_content_id' => $oldModelId
 						),
 						'recursive' => -1
 					));
-					// XXX もしメールレシーバースイッチ設定の初期データ作成を行ってない事を考慮して判定している
-					if ($_data) {
+					if ($cloneData) {
 						// コピー元データがある時
-						$data = Hash::merge($data, $_data);
+						$data = Hash::merge($data, $cloneData);
 						$data['MailSignSwitch']['mail_content_id'] = $contentId;
 						unset($data['MailSignSwitch']['id']);
 					} else {
 						// コピー元データがない時
-						$data['MailSignSwitch']['mail_content_id'] = $modelId;
+						$data['MailSignSwitch']['mail_content_id'] = $foreignId;
 					}
 				}
 				break;
