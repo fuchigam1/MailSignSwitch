@@ -66,6 +66,12 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 	public function mailMailContentAfterSave(CakeEvent $event)
 	{
 		$Model = $event->subject();
+		
+		// MailSignSwitch のデータがない場合は save 処理を実施しない
+		if (!isset($Model->data['MailSignSwitch']) || empty($Model->data['MailSignSwitch'])) {
+			return;
+		}
+		
 		$saveData = $this->generateContentSaveData($Model, $Model->id);
 		if ($saveData) {
 			if (!$this->MailSignSwitchModel->save($saveData)) {
