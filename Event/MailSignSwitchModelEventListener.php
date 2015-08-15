@@ -27,15 +27,22 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 	public $MailSignSwitchModel = null;
 	
 /**
+ * プラグインのモデル名
+ * 
+ * @var string
+ */
+	private $pluginModelName = 'MailSignSwitch';
+	
+/**
  * MailSignSwitch モデルを準備する
  * 
  */
 	private function setUpModel()
 	{
-		if (ClassRegistry::isKeySet('MailSignSwitch.MailSignSwitch')) {
-			$this->MailSignSwitchModel = ClassRegistry::getObject('MailSignSwitch.MailSignSwitch');
+		if (ClassRegistry::isKeySet($this->plugin .'.'. $this->pluginModelName)) {
+			$this->MailSignSwitchModel = ClassRegistry::getObject($this->plugin .'.'. $this->pluginModelName);
 		} else {
-			$this->MailSignSwitchModel = ClassRegistry::init('MailSignSwitch.MailSignSwitch');
+			$this->MailSignSwitchModel = ClassRegistry::init($this->plugin .'.'. $this->pluginModelName);
 		}
 	}
 	
@@ -49,8 +56,8 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 	{
 		$Model = $event->subject();
 		$association = array(
-			'MailSignSwitch' => array(
-				'className' => 'MailSignSwitch.MailSignSwitch',
+			$this->pluginModelName => array(
+				'className' => $this->plugin .'.'. $this->pluginModelName,
 				'foreignKey' => 'mail_content_id'
 			)
 		);
@@ -68,14 +75,14 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 		$Model = $event->subject();
 		
 		// MailSignSwitch のデータがない場合は save 処理を実施しない
-		if (!isset($Model->data['MailSignSwitch']) || empty($Model->data['MailSignSwitch'])) {
+		if (!isset($Model->data[$this->pluginModelName]) || empty($Model->data[$this->pluginModelName])) {
 			return;
 		}
 		
 		$saveData = $this->generateContentSaveData($Model, $Model->id);
 		if ($saveData) {
 			if (!$this->MailSignSwitchModel->save($saveData)) {
-				$this->log(sprintf('ID：%s のメールサインスイッチ設定の保存に失敗しました。', $Model->data['MailSignSwitch']['id']));
+				$this->log(sprintf('ID：%s のメールサインスイッチ設定の保存に失敗しました。', $Model->data[$this->pluginModelName]['id']));
 			}
 		}
 	}
@@ -91,12 +98,12 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 		$Model = $event->subject();
 		$this->setUpModel();
 		$data = $this->MailSignSwitchModel->find('first', array(
-			'conditions' => array('MailSignSwitch.mail_content_id' => $Model->id),
+			'conditions' => array($this->pluginModelName .'.mail_content_id' => $Model->id),
 			'recursive' => -1
 		));
 		if ($data) {
-			if (!$this->MailSignSwitchModel->delete($data['MailSignSwitch']['id'])) {
-				$this->log('ID:' . $data['MailSignSwitch']['id'] . 'のメールレシーバースイッチ設定の削除に失敗しました。');
+			if (!$this->MailSignSwitchModel->delete($data[$this->pluginModelName]['id'])) {
+				$this->log('ID:' . $data[$this->pluginModelName]['id'] . 'のメールレシーバースイッチ設定の削除に失敗しました。');
 			}
 		}
 	}
@@ -124,13 +131,13 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 		
 		switch ($params['action']) {
 			case 'admin_add':		// メールフォーム追加時
-				$data['MailSignSwitch'] = $Model->data['MailSignSwitch'];
-				$data['MailSignSwitch']['mail_content_id'] = $foreignId;
-				unset($data['MailSignSwitch']['id']);
+				$data[$this->pluginModelName] = $Model->data[$this->pluginModelName];
+				$data[$this->pluginModelName]['mail_content_id'] = $foreignId;
+				unset($data[$this->pluginModelName]['id']);
 				break;
 			
 			case 'admin_edit':		// メールフォーム編集時
-				$data['MailSignSwitch'] = $Model->data['MailSignSwitch'];
+				$data[$this->pluginModelName] = $Model->data[$this->pluginModelName];
 				break;
 			
 			case 'admin_ajax_copy':	// Ajaxコピー処理時に実行
@@ -139,18 +146,18 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 					// ajax 処理の際は、複製するモデルのデータのみ取得している状態なので、プラグイン側では改めて複製対象を取得する
 					$cloneData = $this->MailSignSwitchModel->find('first', array(
 						'conditions' => array(
-							'MailSignSwitch.mail_content_id' => $oldModelId
+							$this->pluginModelName .'.mail_content_id' => $oldModelId
 						),
 						'recursive' => -1
 					));
 					if ($cloneData) {
 						// コピー元データがある時
 						$data = Hash::merge($data, $cloneData);
-						$data['MailSignSwitch']['mail_content_id'] = $contentId;
-						unset($data['MailSignSwitch']['id']);
+						$data[$this->pluginModelName]['mail_content_id'] = $contentId;
+						unset($data[$this->pluginModelName]['id']);
 					} else {
 						// コピー元データがない時
-						$data['MailSignSwitch']['mail_content_id'] = $foreignId;
+						$data[$this->pluginModelName]['mail_content_id'] = $foreignId;
 					}
 				}
 				break;

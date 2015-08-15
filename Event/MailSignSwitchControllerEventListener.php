@@ -24,10 +24,10 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
  */
 	private function setUpModel()
 	{
-		if (ClassRegistry::isKeySet('MailSignSwitch.MailSignSwitch')) {
-			$this->MailSignSwitchModel = ClassRegistry::getObject('MailSignSwitch.MailSignSwitch');
+		if (ClassRegistry::isKeySet($this->plugin .'.MailSignSwitch')) {
+			$this->MailSignSwitchModel = ClassRegistry::getObject($this->plugin .'.MailSignSwitch');
 		} else {
-			$this->MailSignSwitchModel = ClassRegistry::init('MailSignSwitch.MailSignSwitch');
+			$this->MailSignSwitchModel = ClassRegistry::init($this->plugin .'.MailSignSwitch');
 		}
 		if (ClassRegistry::isKeySet('Mail.MailConfig')) {
 			$this->MailConfigModel = ClassRegistry::getObject('Mail.MailConfig');

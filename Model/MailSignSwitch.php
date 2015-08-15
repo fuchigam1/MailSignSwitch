@@ -37,7 +37,7 @@ class MailSignSwitch extends BcPluginAppModel
 	public function getDefaultValue()
 	{
 		$data = array(
-			'MailSignSwitch' => array(
+			$this->name => array(
 				'status' => false,
 			)
 		);
