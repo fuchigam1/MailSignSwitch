@@ -138,6 +138,7 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 			
 			case 'admin_edit':		// メールフォーム編集時
 				$data[$this->pluginModelName] = $Model->data[$this->pluginModelName];
+				$data[$this->pluginModelName]['mail_content_id'] = $foreignId;
 				break;
 			
 			case 'admin_ajax_copy':	// Ajaxコピー処理時に実行

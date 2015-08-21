@@ -19,6 +19,13 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	);
 	
 /**
+ * 処理対象とするアクション
+ * 
+ * @var array
+ */
+	private $targetAction = array('admin_edit', 'admin_add');
+	
+/**
  * MailSignSwitch モデルを準備する
  * 
  */
@@ -74,6 +81,10 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 		}
 		
 		$Controller = $event->subject();
+		if (!in_array($Controller->request->params['action'], $this->targetAction)) {
+			return;
+		}
+		
 		$this->setUpModel();
 		
 		// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
@@ -85,6 +96,12 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 			// メールフォーム追加画面では、MailSignSwitchの初期設定情報を送る
 			$defalut = $this->MailSignSwitchModel->getDefaultValue();
 			$Controller->request->data['MailSignSwitch'] = $defalut['MailSignSwitch'];
+			return;
+		}
+		
+		if (isset($Controller->request->data['MailSignSwitch']) && empty($Controller->request->data['MailSignSwitch']['id'])) {
+			$default = $this->MailSignSwitchModel->getDefaultValue();
+			$Controller->request->data['MailSignSwitch'] = $default['MailSignSwitch'];
 		}
 	}
 	
