@@ -17,6 +17,11 @@
 - [Issue](https://github.com/materializing/MailSignSwitch/issues)
 
 
+## 対応予定ナシ
+
+- メールフォーム複製時の署名設定複製
+
+
 ## Thanks
 
 - [http://basercms.net/](http://basercms.net/)
