@@ -1,4 +1,5 @@
 <?php
+
 /**
  * [ADMIN] MailSignSwitch
  *
@@ -19,26 +20,23 @@ App::uses('MailConfig', 'Mail.Model');
 $MailConfigModel = new MailConfig();
 $mailConfigDatas = $MailConfigModel->find('first', array('recursive' => -1));
 
-$MailContentModel = new MailContent();
-$mailContentDatas = $MailContentModel->find('list', array('recursive' => -1));
+$MailContentModel	 = new MailContent();
+$mailContentDatas	 = $MailContentModel->find('list', array('recursive' => -1));
 if ($mailContentDatas) {
 	CakePlugin::load('MailSignSwitch');
 	App::uses('MailSignSwitch', 'MailSignSwitch.Model');
 	$MailSignSwitchModel = new MailSignSwitch();
 	foreach ($mailContentDatas as $key => $mail) {
-		$mailSignSwitch = $MailSignSwitchModel->findByMailContentId($key);
-		$savaData = array();
-		$savaData['MailSignSwitch'] = $mailConfigDatas['MailConfig'];
+		$mailSignSwitch				 = $MailSignSwitchModel->findByMailContentId($key);
+		$savaData					 = array();
+		$savaData['MailSignSwitch']	 = $mailConfigDatas['MailConfig'];
 		unset($savaData['MailSignSwitch']['id']);
-		if(!$mailSignSwitch) {
-			$savaData['MailSignSwitch']['mail_content_id'] = $key;
-			$savaData['MailSignSwitch']['status'] = true;
+		if (!$mailSignSwitch) {
+			$savaData['MailSignSwitch']['mail_content_id']	 = $key;
+			$savaData['MailSignSwitch']['status']			 = true;
 			$MailSignSwitchModel->create($savaData);
 			$MailSignSwitchModel->save($savaData, false);
 		}
 	}
-	// viewキャッシュ削除
-	clearCache();
-	// dataキャッシュ削除
-	clearDataCache();
+	clearAllCache();
 }

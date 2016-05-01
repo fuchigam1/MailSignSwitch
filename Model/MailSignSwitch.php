@@ -1,4 +1,5 @@
 <?php
+
 /**
  * [Model] MailSignSwitch
  *
@@ -8,32 +9,33 @@
  */
 class MailSignSwitch extends BcPluginAppModel
 {
-/**
- * ModelName
- * 
- * @var string
- */
+
+	/**
+	 * ModelName
+	 * 
+	 * @var string
+	 */
 	public $name = 'MailSignSwitch';
-	
-/**
- * PluginName
- * 
- * @var string
- */
+
+	/**
+	 * PluginName
+	 * 
+	 * @var string
+	 */
 	public $plugin = 'MailSignSwitch';
-	
-/**
- * Behavior
- * 
- * @var array
- */
+
+	/**
+	 * Behavior
+	 * 
+	 * @var array
+	 */
 	public $actsAs = array('BcCache');
-	
-/**
- * 初期値を取得する
- *
- * @return array
- */
+
+	/**
+	 * 初期値を取得する
+	 *
+	 * @return array
+	 */
 	public function getDefaultValue()
 	{
 		$data = array(
@@ -41,7 +43,7 @@ class MailSignSwitch extends BcPluginAppModel
 				'status' => false,
 			)
 		);
-		return $data;		
+		return $data;
 	}
-	
+
 }
