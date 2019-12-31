@@ -13,10 +13,9 @@ class MailSignSwitchHelperEventListener extends BcHelperEventListener
 	 *
 	 * @var array
 	 */
-	public $events = array(
-		'Form.afterOptionForm',
-			// Form.afterForm Or Form.afterOptionForm,
-	);
+	public $events = [
+		'BcFormTable.after',
+	];
 
 	/**
 	 * 処理対象とするコントローラー
@@ -33,12 +32,12 @@ class MailSignSwitchHelperEventListener extends BcHelperEventListener
 	private $targetAction = ['admin_edit', 'admin_add'];
 
 	/**
-	 * formAfterCreate
-	 * 
+	 * bcFormTableAfter
+	 *
 	 * @param CakeEvent $event
 	 * @return string
 	 */
-	public function formAfterOptionForm(CakeEvent $event)
+	public function bcFormTableAfter(CakeEvent $event)
 	{
 		if (!BcUtil::isAdminSystem()) {
 			return;
@@ -48,12 +47,15 @@ class MailSignSwitchHelperEventListener extends BcHelperEventListener
 		if (!in_array($View->name, $this->targetController)) {
 			return;
 		}
+		if (!in_array($View->request->params['action'], $this->targetAction)) {
+			return;
+		}
 
-		if (in_array($View->request->params['action'], $this->targetAction)) {
+		if (in_array($event->data['id'], ['MailContentAdminEditForm'])) {
 			// メールフォーム設定編集画面に設定欄を表示する
 			echo $View->element($this->plugin . '.mail_sign_switch_form');
 		}
+
 		return;
 	}
-
 }
