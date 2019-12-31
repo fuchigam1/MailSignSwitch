@@ -1,35 +1,33 @@
 <?php
-
 /**
  * [ControllerEventListener] MailSignSwitch
  *
- * @link			http://www.materializing.net/
- * @author			arata
- * @license			MIT
+ * @link http://www.materializing.net/
+ * @author arata
+ * @license MIT
  */
 class MailSignSwitchControllerEventListener extends BcControllerEventListener
 {
-
 	/**
 	 * 登録イベント
-	 * 
+	 *
 	 * @var array
 	 */
-	public $events = array(
+	public $events = [
 		'Mail.Mail.beforeSendEmail',
 		'Mail.MailContents.beforeRender',
-	);
+	];
 
 	/**
 	 * 処理対象とするアクション
-	 * 
+	 *
 	 * @var array
 	 */
-	private $targetAction = array('admin_edit', 'admin_add');
+	private $targetAction = ['admin_edit', 'admin_add'];
 
 	/**
 	 * MailSignSwitch モデルを準備する
-	 * 
+	 *
 	 */
 	private function setUpModel()
 	{
@@ -47,7 +45,7 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 
 	/**
 	 * mailMailBeforeSendEmail
-	 * 
+	 *
 	 * @param CakeEvent $event
 	 * @return boolean
 	 */
@@ -55,12 +53,12 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	{
 		$Controller		 = $event->subject();
 		$this->setUpModel();
-		$mailSignSwitch	 = $this->MailSignSwitchModel->find('first', array(
-			'conditions' => array(
+		$mailSignSwitch	 = $this->MailSignSwitchModel->find('first', [
+			'conditions' => [
 				'MailSignSwitch.mail_content_id' => $Controller->dbDatas['mailContent']['MailContent']['id']
-			),
+			],
 			'recursive'	 => -1
-		));
+		]);
 		if ($mailSignSwitch) {
 			// MailSignSwitchが有効状態の場合、署名内容をMailSignSwitchの内容に置き換える
 			if ($mailSignSwitch['MailSignSwitch']['status']) {
@@ -73,7 +71,7 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 
 	/**
 	 * mailMailContentsBeforeRender
-	 * 
+	 *
 	 * @param CakeEvent $event
 	 */
 	public function mailMailContentsBeforeRender(CakeEvent $event)
@@ -91,7 +89,7 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 
 		// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
 		// - first は最初の1レコードを取得するためID指定は不要
-		$mailConfigData							 = $this->MailConfigModel->find('first', array('recursive' => -1));
+		$mailConfigData							 = $this->MailConfigModel->find('first', ['recursive' => -1]);
 		$Controller->request->data['MailConfig'] = $mailConfigData['MailConfig'];
 
 		if ($Controller->request->params['action'] == 'admin_add') {

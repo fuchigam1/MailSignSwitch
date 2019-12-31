@@ -1,43 +1,41 @@
 <?php
-
 /**
  * [ModelEventListener] MailSignSwitch
- * 
- * @link			http://www.materializing.net/
- * @author			arata
- * @license			MIT
+ *
+ * @link http://www.materializing.net/
+ * @author arata
+ * @license MIT
  */
 class MailSignSwitchModelEventListener extends BcModelEventListener
 {
-
 	/**
 	 * 登録イベント
 	 *
 	 * @var array
 	 */
-	public $events = array(
+	public $events = [
 		'Mail.MailContent.beforeFind',
 		'Mail.MailContent.afterSave',
 		'Mail.MailContent.afterDelete',
-	);
+	];
 
 	/**
 	 * メールサインスイッチ設定モデル
-	 * 
+	 *
 	 * @var Object
 	 */
 	public $MailSignSwitchModel = null;
 
 	/**
 	 * プラグインのモデル名
-	 * 
+	 *
 	 * @var string
 	 */
 	private $pluginModelName = 'MailSignSwitch';
 
 	/**
 	 * MailSignSwitch モデルを準備する
-	 * 
+	 *
 	 */
 	private function setUpModel()
 	{
@@ -51,25 +49,25 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 	/**
 	 * mailMailContentBeforeFind
 	 * メールコンテンツ取得の際にメールレシーバースイッチ情報も併せて取得する
-	 * 
+	 *
 	 * @param CakeEvent $event
 	 */
 	public function mailMailContentBeforeFind(CakeEvent $event)
 	{
 		$Model		 = $event->subject();
-		$association = array(
-			$this->pluginModelName => array(
+		$association = [
+			$this->pluginModelName => [
 				'className'	 => $this->plugin . '.' . $this->pluginModelName,
 				'foreignKey' => 'mail_content_id'
-			)
-		);
-		$Model->bindModel(array('hasOne' => $association));
+			]
+		];
+		$Model->bindModel(['hasOne' => $association]);
 	}
 
 	/**
 	 * mailMailContentAfterSave
 	 * メールコンテンツ保存時にメールレシーバースイッチ情報も保存する
-	 * 
+	 *
 	 * @param CakeEvent $event
 	 */
 	public function mailMailContentAfterSave(CakeEvent $event)
@@ -92,17 +90,17 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 	/**
 	 * mailMailContentAfterDelete
 	 * メールコンテンツ削除時にメールレシーバースイッチ情報も削除する
-	 * 
+	 *
 	 * @param CakeEvent $event
 	 */
 	public function mailMailContentAfterDelete(CakeEvent $event)
 	{
 		$this->setUpModel();
 		$Model	 = $event->subject();
-		$data	 = $this->MailSignSwitchModel->find('first', array(
-			'conditions' => array($this->pluginModelName . '.mail_content_id' => $Model->id),
+		$data	 = $this->MailSignSwitchModel->find('first', [
+			'conditions' => [$this->pluginModelName . '.mail_content_id' => $Model->id],
 			'recursive'	 => -1
-		));
+		]);
 		if ($data) {
 			if (!$this->MailSignSwitchModel->delete($data[$this->pluginModelName]['id'])) {
 				$this->log('ID:' . $data[$this->pluginModelName]['id'] . 'のメールレシーバースイッチ設定の削除に失敗しました。');
@@ -112,7 +110,7 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 
 	/**
 	 * 保存するデータの生成
-	 * 
+	 *
 	 * @param Object $Model
 	 * @param int $contentId
 	 * @return boolean or array
@@ -125,7 +123,7 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 
 		$this->setUpModel();
 		$params		 = Router::getParams();   // 動作判定のため取得
-		$data		 = array();   // 保存対象データ
+		$data		 = [];   // 保存対象データ
 		$foreignId	 = $contentId; // 外部キー設定
 		if (isset($params['pass'][0])) {
 			$oldModelId = $params['pass'][0]; // ajax処理に入ってくる処理対象モデルID
@@ -147,12 +145,12 @@ class MailSignSwitchModelEventListener extends BcModelEventListener
 				// メールフォームコピー保存時にエラーがなければ保存処理を実行
 				if (empty($Model->validationErrors)) {
 					// ajax 処理の際は、複製するモデルのデータのみ取得している状態なので、プラグイン側では改めて複製対象を取得する
-					$cloneData = $this->MailSignSwitchModel->find('first', array(
-						'conditions' => array(
+					$cloneData = $this->MailSignSwitchModel->find('first', [
+						'conditions' => [
 							$this->pluginModelName . '.mail_content_id' => $oldModelId
-						),
+						],
 						'recursive'	 => -1
-					));
+					]);
 					if ($cloneData) {
 						// コピー元データがある時
 						$data											 = Hash::merge($data, $cloneData);

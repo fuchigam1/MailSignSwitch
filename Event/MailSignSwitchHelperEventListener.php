@@ -1,15 +1,13 @@
 <?php
-
 /**
  * [HelperEventListener] MailSignSwitch
  *
- * @link			http://www.materializing.net/
- * @author			arata
- * @license			MIT
+ * @link http://www.materializing.net/
+ * @author arata
+ * @license MIT
  */
 class MailSignSwitchHelperEventListener extends BcHelperEventListener
 {
-
 	/**
 	 * 登録イベント
 	 *
@@ -22,17 +20,17 @@ class MailSignSwitchHelperEventListener extends BcHelperEventListener
 
 	/**
 	 * 処理対象とするコントローラー
-	 * 
+	 *
 	 * @var array
 	 */
-	private $targetController = array('MailContents');
+	private $targetController = ['MailContents'];
 
 	/**
 	 * 処理対象とするアクション
-	 * 
+	 *
 	 * @var array
 	 */
-	private $targetAction = array('admin_edit', 'admin_add');
+	private $targetAction = ['admin_edit', 'admin_add'];
 
 	/**
 	 * formAfterCreate
