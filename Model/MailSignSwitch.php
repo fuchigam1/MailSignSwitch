@@ -23,13 +23,6 @@ class MailSignSwitch extends BcPluginAppModel
 	public $plugin = 'MailSignSwitch';
 
 	/**
-	 * Behavior
-	 *
-	 * @var array
-	 */
-	public $actsAs = ['BcCache'];
-
-	/**
 	 * 初期値を取得する
 	 *
 	 * @return array
@@ -39,7 +32,7 @@ class MailSignSwitch extends BcPluginAppModel
 		$data = [
 			$this->name => [
 				'status' => false,
-			]
+			],
 		];
 		return $data;
 	}
