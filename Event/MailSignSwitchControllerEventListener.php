@@ -19,24 +19,6 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	];
 
 	/**
-	 * MailSignSwitch モデルを準備する
-	 *
-	 */
-	private function setUpModel()
-	{
-		if (ClassRegistry::isKeySet($this->plugin . '.MailSignSwitch')) {
-			$this->MailSignSwitchModel = ClassRegistry::getObject($this->plugin . '.MailSignSwitch');
-		} else {
-			$this->MailSignSwitchModel = ClassRegistry::init($this->plugin . '.MailSignSwitch');
-		}
-		if (ClassRegistry::isKeySet('Mail.MailConfig')) {
-			$this->MailConfigModel = ClassRegistry::getObject('Mail.MailConfig');
-		} else {
-			$this->MailConfigModel = ClassRegistry::init('Mail.MailConfig');
-		}
-	}
-
-	/**
 	 * mailMailBeforeSendEmail
 	 *
 	 * @param CakeEvent $event
@@ -44,9 +26,10 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	 */
 	public function mailMailBeforeSendEmail(CakeEvent $event)
 	{
-		$Controller		 = $event->subject();
-		$this->setUpModel();
-		$mailSignSwitch	 = $this->MailSignSwitchModel->find('first', [
+		$Controller = $event->subject();
+
+		$MailSignSwitchModel = ClassRegistry::init($this->plugin . '.MailSignSwitch');
+		$mailSignSwitch = $MailSignSwitchModel->find('first', [
 			'conditions' => [
 				'MailSignSwitch.mail_content_id' => $Controller->dbDatas['mailContent']['MailContent']['id']
 			],
@@ -78,22 +61,23 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 			return;
 		}
 
-		$this->setUpModel();
+		$MailSignSwitchModel = ClassRegistry::init($this->plugin . '.MailSignSwitch');
 
 		// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
 		// - first は最初の1レコードを取得するためID指定は不要
-		$mailConfigData							 = $this->MailConfigModel->find('first', ['recursive' => -1]);
+		$MailConfigModel = ClassRegistry::init('Mail.MailConfig');
+		$mailConfigData = $MailConfigModel->find('first', ['recursive' => -1]);
 		$Controller->request->data['MailConfig'] = $mailConfigData['MailConfig'];
 
 		if ($Controller->request->params['action'] == 'admin_add') {
 			// メールフォーム追加画面では、MailSignSwitchの初期設定情報を送る
-			$defalut									 = $this->MailSignSwitchModel->getDefaultValue();
+			$defalut = $MailSignSwitchModel->getDefaultValue();
 			$Controller->request->data['MailSignSwitch'] = $defalut['MailSignSwitch'];
 			return;
 		}
 
 		if (isset($Controller->request->data['MailSignSwitch']) && empty($Controller->request->data['MailSignSwitch']['id'])) {
-			$default									 = $this->MailSignSwitchModel->getDefaultValue();
+			$default = $MailSignSwitchModel->getDefaultValue();
 			$Controller->request->data['MailSignSwitch'] = $default['MailSignSwitch'];
 		}
 	}
