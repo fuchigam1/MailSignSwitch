@@ -2,46 +2,39 @@
 /**
  * [Model] MailSignSwitch
  *
- * @link			http://www.materializing.net/
- * @author			arata
- * @license			MIT
+ * @link http://www.materializing.net/
+ * @author arata
+ * @license MIT
  */
-class MailSignSwitch extends BcPluginAppModel
+class MailSignSwitch extends AppModel
 {
-/**
- * ModelName
- * 
- * @var string
- */
+	/**
+	 * ModelName
+	 *
+	 * @var string
+	 */
 	public $name = 'MailSignSwitch';
-	
-/**
- * PluginName
- * 
- * @var string
- */
+
+	/**
+	 * PluginName
+	 *
+	 * @var string
+	 */
 	public $plugin = 'MailSignSwitch';
-	
-/**
- * Behavior
- * 
- * @var array
- */
-	public $actsAs = array('BcCache');
-	
-/**
- * 初期値を取得する
- *
- * @return array
- */
+
+	/**
+	 * 初期値を取得する
+	 *
+	 * @return array
+	 */
 	public function getDefaultValue()
 	{
-		$data = array(
-			$this->name => array(
+		$data = [
+			$this->name => [
 				'status' => false,
-			)
-		);
-		return $data;		
+			],
+		];
+		return $data;
 	}
-	
+
 }
