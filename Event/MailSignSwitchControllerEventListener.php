@@ -28,20 +28,19 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	{
 		$Controller = $event->subject();
 
-		$MailSignSwitchModel = ClassRegistry::init($this->plugin . '.MailSignSwitch');
+		$MailSignSwitchModel = ClassRegistry::init('MailSignSwitch.MailSignSwitch');
 		$mailSignSwitch = $MailSignSwitchModel->find('first', [
 			'conditions' => [
-				'MailSignSwitch.mail_content_id' => $Controller->dbDatas['mailContent']['MailContent']['id']
+				'MailSignSwitch.mail_content_id' => $Controller->dbDatas['mailContent']['MailContent']['id'],
+				'MailSignSwitch.status' => true,
 			],
-			'recursive'	 => -1
+			'recursive' => -1,
 		]);
 		if ($mailSignSwitch) {
 			// MailSignSwitchが有効状態の場合、署名内容をMailSignSwitchの内容に置き換える
-			if ($mailSignSwitch['MailSignSwitch']['status']) {
-				$Controller->dbDatas['mailConfig']['MailConfig'] = $mailSignSwitch['MailSignSwitch'];
-				//$this->log($Controller->dbDatas['mailConfig']['MailConfig'], LOG_DEBUG);
-			}
+			$Controller->dbDatas['mailConfig']['MailConfig'] = $mailSignSwitch['MailSignSwitch'];
 		}
+
 		return true;
 	}
 
@@ -61,15 +60,14 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 			return;
 		}
 
-		$MailSignSwitchModel = ClassRegistry::init($this->plugin . '.MailSignSwitch');
-
 		// 署名切替えの入力欄に、placeholder で現在の基本設定の内容を表示するためにデータを送る
 		// - first は最初の1レコードを取得するためID指定は不要
 		$MailConfigModel = ClassRegistry::init('Mail.MailConfig');
 		$mailConfigData = $MailConfigModel->find('first', ['recursive' => -1]);
 		$Controller->request->data['MailConfig'] = $mailConfigData['MailConfig'];
 
-		if ($Controller->request->params['action'] == 'admin_add') {
+		if ($Controller->request->params['action'] === 'admin_add') {
+			$MailSignSwitchModel = ClassRegistry::init('MailSignSwitch.MailSignSwitch');
 			// メールフォーム追加画面では、MailSignSwitchの初期設定情報を送る
 			$defalut = $MailSignSwitchModel->getDefaultValue();
 			$Controller->request->data['MailSignSwitch'] = $defalut['MailSignSwitch'];
@@ -77,6 +75,7 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 		}
 
 		if (isset($Controller->request->data['MailSignSwitch']) && empty($Controller->request->data['MailSignSwitch']['id'])) {
+			$MailSignSwitchModel = ClassRegistry::init('MailSignSwitch.MailSignSwitch');
 			$default = $MailSignSwitchModel->getDefaultValue();
 			$Controller->request->data['MailSignSwitch'] = $default['MailSignSwitch'];
 		}
