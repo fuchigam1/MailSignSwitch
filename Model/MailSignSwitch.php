@@ -6,7 +6,7 @@
  * @author arata
  * @license MIT
  */
-class MailSignSwitch extends BcPluginAppModel
+class MailSignSwitch extends AppModel
 {
 	/**
 	 * ModelName
