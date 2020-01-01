@@ -19,13 +19,6 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 	];
 
 	/**
-	 * 処理対象とするアクション
-	 *
-	 * @var array
-	 */
-	private $targetAction = ['admin_edit', 'admin_add'];
-
-	/**
 	 * MailSignSwitch モデルを準備する
 	 *
 	 */
@@ -81,7 +74,7 @@ class MailSignSwitchControllerEventListener extends BcControllerEventListener
 		}
 
 		$Controller = $event->subject();
-		if (!in_array($Controller->request->params['action'], $this->targetAction)) {
+		if (!in_array($Controller->request->params['action'], ['admin_edit', 'admin_add'])) {
 			return;
 		}
 
