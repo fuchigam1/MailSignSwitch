@@ -8,24 +8,10 @@
  */
 ?>
 <div class="section">
-	<script type="text/javascript">
-	$(function () {
-		mailSignSwitchStatusClickHandler();
-		$('input[name="data[MailSignSwitch][status]"]').on('click', mailSignSwitchStatusClickHandler);
-		function mailSignSwitchStatusClickHandler() {
-			if($('input[name="data[MailSignSwitch][status]"]:checked').val() === '1') {
-				$("#MailSignSwitchTable").slideDown('slow');
-			} else {
-				$("#MailSignSwitchTable").slideUp('fast');
-			}
-		}
-	});
-	</script>
-
 	<h3>署名設定</h3>
 	<?php echo $this->BcForm->input('MailSignSwitch.id', ['type' => 'hidden']) ?>
 	<?php echo $this->BcForm->input('MailSignSwitch.mail_content_id', ['type' => 'hidden']) ?>
-	<table cellpadding="0" cellspacing="0" id="MailSignSwitchStatusTable" class="form-table" style="margin-bottom: 5px;">
+	<table cellpadding="0" cellspacing="0" id="MailSignSwitchTable" class="form-table">
 		<tr>
 			<th class="col-head"><?php echo $this->BcForm->label('MailSignSwitch.status', '署名切替えの利用') ?></th>
 			<td class="col-input">
@@ -40,9 +26,6 @@
 				<?php echo $this->BcForm->error('MailSignSwitch.status') ?>
 			</td>
 		</tr>
-	</table>
-
-	<table cellpadding="0" cellspacing="0" id="MailSignSwitchTable" class="form-table">
 		<tr>
 			<th class="col-head"><?php echo $this->BcForm->label('MailSignSwitch.site_name', 'WEBサイト名') ?></th>
 			<td class="col-input">
